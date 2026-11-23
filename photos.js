@@ -25,4 +25,11 @@ const PHOTOS = [
   { src: "photos/japan-2026/inari_shrine_gates.jpg",    title: "Gates",                             category: "Japan" },
   { src: "photos/japan-2026/inari_shrine_light.jpg",    title: "Ray of light on tori gate",         category: "Japan" },
   { src: "photos/japan-2026/inari_shrine_view.jpg",     title: "Kyoto, Japan",                      category: "Japan" },
+
+  { src: "photos/camping-2026/bridge.jpg",              title: "Bridge in the forest",              category: "Camping" },
+  { src: "photos/camping-2026/night_sky.jpg",           title: "Night Sky",                         category: "Camping" },
+  { src: "photos/camping-2026/fur_squat.jpg",           title: "Gyatt",                             category: "Camping" },
+  { src: "photos/camping-2026/rapids.jpg",              title: "Adventuring and found rapids",      category: "Camping" },
+  { src: "photos/camping-2026/fur_rapids.jpg",          title: "The goat by rapids",                category: "Camping" },
+  { src: "photos/camping-2026/fur.jpg",                 title: "The goat",                          category: "Camping" },
 ];

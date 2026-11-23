@@ -27,7 +27,13 @@
   </section>
 
   <main id="work">
-    <div class="filters" id="filters"></div>
+    <div class="toolbar">
+      <div class="filters" id="filters"></div>
+      <div class="layout-toggle" id="layout-toggle" role="group" aria-label="Gallery layout">
+        <button data-cols="1" aria-label="One column" title="One column"><span></span></button>
+        <button data-cols="2" aria-label="Two columns" title="Two columns"><span></span><span></span></button>
+      </div>
+    </div>
     <div class="gallery" id="gallery"></div>
   </main>
 

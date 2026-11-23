@@ -52,6 +52,18 @@ PHOTOS.forEach((p, i) => {
   gallery.appendChild(tile);
 });
 
+// One / two column switch (remembers the visitor's choice)
+const toggle = document.getElementById("layout-toggle");
+function setColumns(n) {
+  gallery.classList.toggle("two", n === 2);
+  toggle.querySelectorAll("button").forEach(b => b.classList.toggle("active", +b.dataset.cols === n));
+  try { localStorage.setItem("gallery-columns", n); } catch {}
+}
+toggle.querySelectorAll("button").forEach(b => (b.onclick = () => setColumns(+b.dataset.cols)));
+let savedCols = 1;
+try { savedCols = +localStorage.getItem("gallery-columns") || 1; } catch {}
+setColumns(savedCols);
+
 // Lightbox
 const lb = document.getElementById("lightbox");
 const lbImg = document.getElementById("lb-img");

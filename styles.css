@@ -38,7 +38,19 @@ nav a:hover { color: var(--fg); }
 
 /* Filters */
 main { padding: 6rem 2.5rem 4rem; }
-.filters { display: flex; gap: 1.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3rem; }
+.toolbar { position: relative; display: flex; justify-content: center; align-items: center; margin-bottom: 3rem; min-height: 2rem; }
+.filters { display: flex; gap: 1.75rem; justify-content: center; flex-wrap: wrap; }
+
+/* One / two column switch */
+.layout-toggle { position: absolute; right: 0; display: flex; gap: .4rem; }
+.layout-toggle button {
+  display: flex; gap: 3px; width: 34px; height: 28px; padding: 5px;
+  background: none; border: 1px solid var(--line); cursor: pointer; transition: border-color .2s;
+}
+.layout-toggle button span { flex: 1; background: var(--muted); transition: background .2s; }
+.layout-toggle button:hover { border-color: var(--muted); }
+.layout-toggle button.active { border-color: var(--fg); }
+.layout-toggle button.active span { background: var(--fg); }
 .filters button {
   background: none; border: none; color: var(--muted); cursor: pointer;
   font: 400 .78rem var(--sans); letter-spacing: .2em; text-transform: uppercase;
@@ -48,8 +60,9 @@ main { padding: 6rem 2.5rem 4rem; }
 .filters button.active { color: var(--fg); border-color: var(--fg); }
 
 /* Gallery (masonry via columns) */
-.gallery { columns: 3 320px; column-gap: 1rem; max-width: 1500px; margin: 0 auto; }
-.tile { break-inside: avoid; margin-bottom: 1rem; position: relative; overflow: hidden; cursor: zoom-in; background: #1a1a19; }
+.gallery { columns: 1; column-gap: 1.25rem; max-width: 1000px; margin: 0 auto; }
+.gallery.two { columns: 2; max-width: 1400px; }
+.tile { break-inside: avoid; margin-bottom: 1.25rem; position: relative; overflow: hidden; cursor: zoom-in; background: #1a1a19; }
 .tile img { width: 100%; display: block; transition: transform .6s ease, opacity .6s; opacity: 0; }
 .tile img.loaded { opacity: 1; }
 .tile:hover img { transform: scale(1.03); }
@@ -95,5 +108,6 @@ footer { text-align: center; padding: 2rem; font-size: .7rem; letter-spacing: .1
   nav a { margin-left: 1.1rem; }
   .hero { padding: 0 1.25rem 5rem; }
   main { padding: 4rem 1rem 3rem; }
-  .gallery { columns: 1; }
+  .toolbar { flex-direction: column; gap: 1.25rem; }
+  .layout-toggle { position: static; }
 }
