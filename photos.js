@@ -11,8 +11,8 @@ const SITE = {
   name: "Pano Sourlis",
   tagline: "Photography",
   about:
-    "I'm a University Student and novice photographer still learning as a hobby" +
-    "These are some photos that I like",
+    "I'm a University Student and novice photographer still learning. I am doing this as a hobby at the moment." +
+    " These are some photos that I like that I have taken.",
   email: "sourlispanayiotis@gmail.com",
   instagram: "https://instagram.com/pano.sourlis",
 };
