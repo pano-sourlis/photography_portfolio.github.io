@@ -1,24 +1,30 @@
-// Fill in site text
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2, "0");
+
+// ---------- Site text ----------
 document.title = `${SITE.name} — ${SITE.tagline}`;
-document.getElementById("site-name").textContent = SITE.name;
-document.getElementById("site-tagline").textContent = SITE.tagline;
-document.getElementById("hero-name").textContent = SITE.name;
-document.getElementById("hero-tagline").textContent = SITE.tagline;
-document.getElementById("about-text").textContent = SITE.about;
-document.getElementById("footer-name").textContent = SITE.name;
-document.getElementById("year").textContent = new Date().getFullYear();
-const email = document.getElementById("email-link");
+$("site-name").textContent = SITE.name;
+$("hero-name").textContent = SITE.name;
+$("hero-tagline").textContent = SITE.tagline;
+$("about-text").textContent = SITE.about;
+$("footer-name").textContent = SITE.name;
+$("year").textContent = new Date().getFullYear();
+$("photo-count").textContent = pad(PHOTOS.length);
+const email = $("email-link");
 email.href = `mailto:${SITE.email}`;
 email.textContent = SITE.email;
-const insta = document.getElementById("insta-link");
+const insta = $("insta-link");
 if (SITE.instagram) insta.href = SITE.instagram; else insta.remove();
 
-// Hero uses the first photo
-if (PHOTOS.length) document.getElementById("hero").style.backgroundImage = `url("${PHOTOS[0].src}")`;
+if (PHOTOS.length) { $("hero-img").src = PHOTOS[0].src; $("hero-img").alt = PHOTOS[0].title || ""; }
 
-// Filters
+// Top bar gets a solid background once you scroll
+const topbar = document.querySelector(".topbar");
+addEventListener("scroll", () => topbar.classList.toggle("scrolled", scrollY > 60), { passive: true });
+
+// ---------- Filters ----------
 const categories = ["All", ...new Set(PHOTOS.map(p => p.category).filter(Boolean))];
-const filtersEl = document.getElementById("filters");
+const filtersEl = $("filters");
 categories.forEach((cat, i) => {
   const b = document.createElement("button");
   b.textContent = cat;
@@ -34,28 +40,33 @@ categories.forEach((cat, i) => {
 });
 if (categories.length <= 2) filtersEl.style.display = "none";
 
-// Gallery
-const gallery = document.getElementById("gallery");
+// ---------- Gallery ----------
+const gallery = $("gallery");
+const reveal = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); reveal.unobserve(e.target); } });
+}, { rootMargin: "0px 0px -8% 0px" });
+
 PHOTOS.forEach((p, i) => {
   const tile = document.createElement("div");
   tile.className = "tile";
   tile.dataset.category = p.category || "";
-  tile.innerHTML = `<img loading="lazy" alt=""><div class="caption"></div>`;
+  tile.tabIndex = 0;
+  tile.innerHTML = `<span class="tag">No.${pad(i + 1)}</span><div class="frame"><img loading="lazy"></div><div class="label"></div>`;
   const img = tile.querySelector("img");
-  img.alt = p.title || "";
-  img.onload = () => img.classList.add("loaded");
   img.src = p.src;
-  const cap = tile.querySelector(".caption");
-  cap.textContent = p.title || "";
-  if (p.category) { const s = document.createElement("span"); s.textContent = p.category; cap.appendChild(s); }
+  img.alt = p.title || "";
+  const label = tile.querySelector(".label");
+  label.textContent = p.title || "";
+  if (p.category) { const s = document.createElement("span"); s.textContent = p.category; label.appendChild(s); }
   tile.onclick = () => openLightbox(i);
+  tile.onkeydown = e => { if (e.key === "Enter") openLightbox(i); };
   gallery.appendChild(tile);
+  reveal.observe(tile);
 });
 
-// Lightbox
-const lb = document.getElementById("lightbox");
-const lbImg = document.getElementById("lb-img");
-const lbCap = document.getElementById("lb-caption");
+// ---------- Lightbox ----------
+const lb = $("lightbox");
+const lbImg = $("lb-img");
 let current = 0;
 
 function visibleIndexes() {
@@ -65,12 +76,16 @@ function visibleIndexes() {
 }
 function show(i) {
   current = i;
+  lbImg.classList.remove("swap"); void lbImg.offsetWidth; lbImg.classList.add("swap");
   lbImg.src = PHOTOS[i].src;
   lbImg.alt = PHOTOS[i].title || "";
-  lbCap.textContent = [PHOTOS[i].title, PHOTOS[i].category].filter(Boolean).join("  ·  ");
+  $("lb-title").textContent = PHOTOS[i].title || "";
+  $("lb-cat").textContent = PHOTOS[i].category || "";
+  $("lb-num").textContent = pad(i + 1);
+  $("lb-total").textContent = "/ " + pad(PHOTOS.length);
 }
-function openLightbox(i) { show(i); lb.classList.add("open"); lb.setAttribute("aria-hidden", "false"); }
-function closeLightbox() { lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true"); }
+function openLightbox(i) { show(i); lb.classList.add("open"); lb.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; }
+function closeLightbox() { lb.classList.remove("open"); lb.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
 function step(dir) {
   const vis = visibleIndexes();
   const pos = vis.indexOf(current);
@@ -88,9 +103,8 @@ document.addEventListener("keydown", e => {
   if (e.key === "ArrowLeft") step(-1);
 });
 
-// Swipe on phones
 let touchX = null;
-lb.addEventListener("touchstart", e => (touchX = e.touches[0].clientX));
+lb.addEventListener("touchstart", e => (touchX = e.touches[0].clientX), { passive: true });
 lb.addEventListener("touchend", e => {
   if (touchX === null) return;
   const dx = e.changedTouches[0].clientX - touchX;
