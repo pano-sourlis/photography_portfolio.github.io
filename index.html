@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Photography</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;1,600;1,800;1,900&family=Barlow:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="bg" aria-hidden="true"><div class="bg-stripes"></div><div class="bg-glow"></div></div>
-
-  <header class="topbar">
-    <a href="#top" class="brand"><span id="site-name"></span></a>
+  <header class="site-header">
+    <a href="#" class="brand"><span id="site-name"></span><small id="site-tagline"></small></a>
     <nav>
       <a href="#work">Work</a>
       <a href="#about">About</a>
@@ -20,65 +18,41 @@
     </nav>
   </header>
 
-  <!-- Opening "menu screen" -->
-  <section class="hero" id="top">
-    <div class="hero-photo"><img id="hero-img" alt="" /></div>
-    <div class="hero-shard" aria-hidden="true"></div>
-
-    <div class="hero-title">
-      <span class="hero-tag" id="hero-tagline"></span>
+  <section class="hero" id="hero">
+    <div class="hero-text">
       <h1 id="hero-name"></h1>
+      <p id="hero-tagline"></p>
     </div>
-
-    <ul class="menu">
-      <li style="--i:0"><a href="#work"><small>01</small>Work</a></li>
-      <li style="--i:1"><a href="#about"><small>02</small>About</a></li>
-      <li style="--i:2"><a href="#contact"><small>03</small>Contact</a></li>
-    </ul>
-
-    <div class="hero-meta"><span id="photo-count"></span> frames</div>
+    <a href="#work" class="scroll-cue" aria-label="Scroll to work">↓</a>
   </section>
 
-  <main id="work" class="section">
-    <div class="section-head">
-      <span class="ghost" aria-hidden="true">Work</span>
-      <h2>Work</h2>
-    </div>
+  <main id="work">
     <div class="filters" id="filters"></div>
     <div class="gallery" id="gallery"></div>
   </main>
 
-  <section id="about" class="section about">
-    <div class="section-head">
-      <span class="ghost" aria-hidden="true">About</span>
-      <h2>About</h2>
-    </div>
-    <p id="about-text" class="slab-text"></p>
+  <section id="about" class="about">
+    <h2>About</h2>
+    <p id="about-text"></p>
   </section>
 
-  <section id="contact" class="section contact">
-    <div class="section-head">
-      <span class="ghost" aria-hidden="true">Contact</span>
-      <h2>Contact</h2>
-    </div>
-    <p class="contact-lead">For prints, bookings or just to say hello.</p>
-    <div class="contact-links">
-      <a id="email-link" class="slab-btn"></a>
-      <a id="insta-link" class="slab-btn alt" target="_blank" rel="noopener">Instagram</a>
-    </div>
+  <section id="contact" class="contact">
+    <h2>Contact</h2>
+    <p>For prints, bookings or just to say hello.</p>
+    <a id="email-link" class="button"></a>
+    <a id="insta-link" class="link" target="_blank" rel="noopener">Instagram</a>
   </section>
 
   <footer>© <span id="year"></span> <span id="footer-name"></span></footer>
 
   <div class="lightbox" id="lightbox" aria-hidden="true">
-    <div class="lb-count" aria-hidden="true"><span id="lb-num"></span><small id="lb-total"></small></div>
-    <button class="lb-close" aria-label="Close">Close <kbd>Esc</kbd></button>
+    <button class="lb-close" aria-label="Close">×</button>
+    <button class="lb-prev" aria-label="Previous">‹</button>
     <figure>
       <img id="lb-img" alt="" />
+      <figcaption id="lb-caption"></figcaption>
     </figure>
-    <div class="lb-caption"><strong id="lb-title"></strong><span id="lb-cat"></span></div>
-    <button class="lb-prev" aria-label="Previous">◀</button>
-    <button class="lb-next" aria-label="Next">▶</button>
+    <button class="lb-next" aria-label="Next">›</button>
   </div>
 
   <script src="photos.js"></script>
