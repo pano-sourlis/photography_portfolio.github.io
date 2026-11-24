@@ -12,7 +12,7 @@ const SITE = {
   name: "Pano Sourlis",
   tagline: "Photography",
   // Short line shown under your name on the opening screen (delete it to hide)
-  intro: "Student photographer capturing quiet streets, old shrines and wild places.",
+  intro: "Student photographer with the goal to travel the world.",
   about:
     "I'm a University Student and novice photographer still learning. I am doing this as a hobby at the moment." +
     " These are some photos that I like that I have taken.",
