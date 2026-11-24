@@ -25,6 +25,12 @@ const PHOTOS = [
   { src: "photos/japan-2026/inari_shrine_gates.jpg",    title: "Gates",                             category: "Japan" },
   { src: "photos/japan-2026/inari_shrine_light.jpg",    title: "Ray of light on tori gate",         category: "Japan" },
   { src: "photos/japan-2026/inari_shrine_view.jpg",     title: "Kyoto, Japan",                      category: "Japan" },
+  { src: "photos/japan-2026/dotonbori_river_1.jpg",     title: "Dotonbori River",                   category: "Japan" },
+  { src: "photos/japan-2026/kyoto_street.jpg",          title: "Rainy day in Kyoto",                category: "Japan" },
+  { src: "photos/japan-2026/osaka_castle_1.jpg",        title: "Osaka Castle 1",                    category: "Japan" },
+  { src: "photos/japan-2026/osaka_castle_2.jpg",        title: "Osaka Castle 2",                    category: "Japan" },
+  { src: "photos/japan-2026/persona_3_station.jpg",     title: "Dark Hour",                         category: "Japan" },
+  { src: "photos/japan-2026/tokyo_skytree_river.jpg",   title: "Cool view by the river",            category: "Japan" },
 
   { src: "photos/camping-2026/bridge.jpg",              title: "Bridge in the forest",              category: "Camping" },
   { src: "photos/camping-2026/night_sky.jpg",           title: "Night Sky",                         category: "Camping" },
