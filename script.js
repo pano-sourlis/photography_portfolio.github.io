@@ -13,25 +13,92 @@ email.textContent = SITE.email;
 const insta = document.getElementById("insta-link");
 if (SITE.instagram) insta.href = SITE.instagram; else insta.remove();
 
-// Hero uses the first photo
-if (PHOTOS.length) document.getElementById("hero").style.backgroundImage = `url("${PHOTOS[0].src}")`;
-
-// Filters
+const pad = n => String(n).padStart(2, "0");
 const categories = ["All", ...new Set(PHOTOS.map(p => p.category).filter(Boolean))];
+
+// ---------- Hero ----------
+document.getElementById("hero-intro").textContent = SITE.intro || "";
+if (!SITE.intro) document.getElementById("hero-intro").remove();
+
+// Collection links under the name (e.g. "Japan 13", "Camping 6")
+const collectionsEl = document.getElementById("hero-collections");
+categories.slice(1).forEach(cat => {
+  const a = document.createElement("a");
+  a.href = "#work";
+  a.textContent = cat;
+  const count = document.createElement("small");
+  count.textContent = PHOTOS.filter(p => p.category === cat).length;
+  a.appendChild(count);
+  a.onclick = () => applyFilter(cat);
+  collectionsEl.appendChild(a);
+});
+
+// Slideshow: photos marked `featured: true`, or else up to 5 spread across the list
+let slides = PHOTOS.filter(p => p.featured);
+if (slides.length < 2) {
+  const n = Math.min(5, PHOTOS.length);
+  slides = [...new Set(Array.from({ length: n }, (_, k) => PHOTOS[Math.floor((k * PHOTOS.length) / n)]))];
+}
+const SLIDE_MS = 6000;
+const slidesEl = document.getElementById("hero-slides");
+const caption = document.getElementById("hero-caption");
+const bars = document.getElementById("hc-bars");
+caption.style.setProperty("--slide-ms", SLIDE_MS + "ms");
+document.getElementById("hc-total").textContent = pad(slides.length);
+
+const slideEls = slides.map((p, i) => {
+  const d = document.createElement("div");
+  d.className = "slide";
+  // Load the first image right away, the rest shortly after so the page opens fast
+  setTimeout(() => (d.style.backgroundImage = `url("${p.src}")`), i === 0 ? 0 : 1500);
+  slidesEl.appendChild(d);
+  const b = document.createElement("button");
+  b.setAttribute("aria-label", `Show ${p.title || "photo " + (i + 1)}`);
+  b.innerHTML = "<i></i>";
+  b.onclick = () => goTo(i);
+  bars.appendChild(b);
+  return d;
+});
+
+let slide = -1, timer;
+function goTo(i) {
+  if (!slides.length) return;
+  slide = (i + slides.length) % slides.length;
+  slideEls.forEach((el, k) => el.classList.toggle("active", k === slide));
+  [...bars.children].forEach((b, k) => {
+    b.classList.remove("active");
+    b.classList.toggle("done", k < slide);
+  });
+  void bars.offsetWidth; // restart the progress animation
+  bars.children[slide].classList.add("active");
+  caption.classList.add("fading");
+  setTimeout(() => {
+    document.getElementById("hc-num").textContent = pad(slide + 1);
+    document.getElementById("hc-title").textContent = slides[slide].title || "";
+    document.getElementById("hc-cat").textContent = slides[slide].category || "";
+    caption.classList.remove("fading");
+  }, slide === 0 && !timer ? 0 : 400);
+  clearTimeout(timer);
+  if (slides.length > 1) timer = setTimeout(() => goTo(slide + 1), SLIDE_MS);
+}
+goTo(0);
+if (slides.length < 2) bars.remove();
+
+// ---------- Filters ----------
 const filtersEl = document.getElementById("filters");
-categories.forEach((cat, i) => {
+function applyFilter(cat) {
+  filtersEl.querySelectorAll("button").forEach(x => x.classList.toggle("active", x.textContent === cat));
+  document.querySelectorAll(".tile").forEach(t => {
+    t.classList.toggle("hidden", cat !== "All" && t.dataset.category !== cat);
+  });
+}
+categories.forEach(cat => {
   const b = document.createElement("button");
   b.textContent = cat;
-  if (i === 0) b.classList.add("active");
-  b.onclick = () => {
-    filtersEl.querySelectorAll("button").forEach(x => x.classList.remove("active"));
-    b.classList.add("active");
-    document.querySelectorAll(".tile").forEach(t => {
-      t.classList.toggle("hidden", cat !== "All" && t.dataset.category !== cat);
-    });
-  };
+  b.onclick = () => applyFilter(cat);
   filtersEl.appendChild(b);
 });
+filtersEl.firstChild?.classList.add("active");
 if (categories.length <= 2) filtersEl.style.display = "none";
 
 // Gallery

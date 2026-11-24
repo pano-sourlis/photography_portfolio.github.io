@@ -19,11 +19,26 @@
   </header>
 
   <section class="hero" id="hero">
+    <div class="hero-slides" id="hero-slides" aria-hidden="true"></div>
+
     <div class="hero-text">
+      <p class="eyebrow"><span class="rule"></span><span id="hero-tagline"></span></p>
       <h1 id="hero-name"></h1>
-      <p id="hero-tagline"></p>
+      <p class="hero-intro" id="hero-intro"></p>
+      <div class="hero-actions">
+        <a href="#work" class="button">View work</a>
+        <div class="hero-collections" id="hero-collections"></div>
+      </div>
     </div>
-    <a href="#work" class="scroll-cue" aria-label="Scroll to work">↓</a>
+
+    <div class="hero-caption" id="hero-caption">
+      <div class="hc-count"><b id="hc-num"></b> / <span id="hc-total"></span></div>
+      <div class="hc-title" id="hc-title"></div>
+      <div class="hc-cat" id="hc-cat"></div>
+      <div class="hc-bars" id="hc-bars"></div>
+    </div>
+
+    <a href="#work" class="scroll-cue" aria-label="Scroll to work"><span>Scroll</span>↓</a>
   </section>
 
   <main id="work">

@@ -5,11 +5,14 @@
 //     { src: "photos/sunset.jpg", title: "Sunset at the pier", category: "Landscape" },
 //  3. Delete the placeholder lines (the picsum.photos ones).
 //  Categories become filter buttons automatically.
+//  Add  featured: true  to a photo to put it in the opening slideshow.
 // ============================================================
 
 const SITE = {
   name: "Pano Sourlis",
   tagline: "Photography",
+  // Short line shown under your name on the opening screen (delete it to hide)
+  intro: "Student photographer capturing quiet streets, old shrines and wild places.",
   about:
     "I'm a University Student and novice photographer still learning. I am doing this as a hobby at the moment." +
     " These are some photos that I like that I have taken.",
