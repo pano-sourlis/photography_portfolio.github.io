@@ -14,24 +14,25 @@ const insta = document.getElementById("insta-link");
 if (SITE.instagram) insta.href = SITE.instagram; else insta.remove();
 
 const pad = n => String(n).padStart(2, "0");
+
+// Small copies made by optimize-photos.ps1: photos/x/y.jpg -> photos-web/1200/x/y.jpg
+function web(src, size) {
+  if (!/^photos\//.test(src) || !/\.(jpe?g|png)$/i.test(src)) return src;
+  return src.replace(/^photos\//, `photos-web/${size}/`).replace(/\.(jpe?g|png)$/i, ".jpg");
+}
+// Load an image, falling back to the original file if no small copy exists yet
+function loadImage(urls, onDone) {
+  const [first, ...rest] = urls;
+  const im = new Image();
+  im.onload = () => onDone(first);
+  im.onerror = () => (rest.length ? loadImage(rest, onDone) : onDone(null));
+  im.src = first;
+}
 const categories = ["All", ...new Set(PHOTOS.map(p => p.category).filter(Boolean))];
 
 // ---------- Hero ----------
 document.getElementById("hero-intro").textContent = SITE.intro || "";
 if (!SITE.intro) document.getElementById("hero-intro").remove();
-
-// Collection links under the name (e.g. "Japan 13", "Camping 6")
-const collectionsEl = document.getElementById("hero-collections");
-categories.slice(1).forEach(cat => {
-  const a = document.createElement("a");
-  a.href = "#work";
-  a.textContent = cat;
-  const count = document.createElement("small");
-  count.textContent = PHOTOS.filter(p => p.category === cat).length;
-  a.appendChild(count);
-  a.onclick = () => applyFilter(cat);
-  collectionsEl.appendChild(a);
-});
 
 // Slideshow: photos marked `featured: true`, or else up to 5 spread across the list
 let slides = PHOTOS.filter(p => p.featured);
@@ -49,8 +50,6 @@ document.getElementById("hc-total").textContent = pad(slides.length);
 const slideEls = slides.map((p, i) => {
   const d = document.createElement("div");
   d.className = "slide";
-  // Load the first image right away, the rest shortly after so the page opens fast
-  setTimeout(() => (d.style.backgroundImage = `url("${p.src}")`), i === 0 ? 0 : 1500);
   slidesEl.appendChild(d);
   const b = document.createElement("button");
   b.setAttribute("aria-label", `Show ${p.title || "photo " + (i + 1)}`);
@@ -60,10 +59,23 @@ const slideEls = slides.map((p, i) => {
   return d;
 });
 
+// Slides load one at a time: the current one, plus the next one in the background
+const heroSize = innerWidth <= 800 ? 1200 : 2400;
+function loadSlide(k) {
+  const el = slideEls[k];
+  if (!el || el.dataset.loading) return;
+  el.dataset.loading = "1";
+  loadImage([web(slides[k].src, heroSize), slides[k].src], url => {
+    if (url) el.style.backgroundImage = `url("${url}")`;
+  });
+}
+
 let slide = -1, timer;
 function goTo(i) {
   if (!slides.length) return;
   slide = (i + slides.length) % slides.length;
+  loadSlide(slide);
+  loadSlide((slide + 1) % slides.length);
   slideEls.forEach((el, k) => el.classList.toggle("active", k === slide));
   [...bars.children].forEach((b, k) => {
     b.classList.remove("active");
@@ -83,6 +95,26 @@ function goTo(i) {
 }
 goTo(0);
 if (slides.length < 2) bars.remove();
+
+// ---------- Gear ----------
+const gearGrid = document.getElementById("gear-grid");
+const gearList = typeof GEAR !== "undefined" ? GEAR : [];
+gearList.forEach(g => {
+  const card = document.createElement("div");
+  card.className = "gear-item";
+  [["gear-type", g.type], ["gear-name", g.name], ["gear-note", g.note]].forEach(([cls, text]) => {
+    if (!text) return;
+    const el = document.createElement("div");
+    el.className = cls;
+    el.textContent = text;
+    card.appendChild(el);
+  });
+  gearGrid.appendChild(card);
+});
+if (!gearList.length) {
+  document.getElementById("gear").remove();
+  document.querySelector('nav a[href="#gear"]')?.remove();
+}
 
 // ---------- Filters ----------
 const filtersEl = document.getElementById("filters");
@@ -107,11 +139,17 @@ PHOTOS.forEach((p, i) => {
   const tile = document.createElement("div");
   tile.className = "tile";
   tile.dataset.category = p.category || "";
-  tile.innerHTML = `<img loading="lazy" alt=""><div class="caption"></div>`;
+  tile.innerHTML = `<img loading="lazy" decoding="async" alt=""><div class="caption"></div>`;
   const img = tile.querySelector("img");
   img.alt = p.title || "";
   img.onload = () => img.classList.add("loaded");
-  img.src = p.src;
+  // If the small copies are missing, show the original instead
+  img.onerror = () => { if (img.src.includes("photos-web/")) { img.removeAttribute("srcset"); img.src = p.src; } };
+  if (web(p.src, 1200) !== p.src) {
+    img.sizes = "(max-width: 640px) 100vw, 1000px";
+    img.srcset = `${web(p.src, 1200)} 1200w, ${web(p.src, 2400)} 2400w`;
+  }
+  img.src = web(p.src, 1200);
   const cap = tile.querySelector(".caption");
   cap.textContent = p.title || "";
   if (p.category) { const s = document.createElement("span"); s.textContent = p.category; cap.appendChild(s); }
@@ -144,7 +182,8 @@ function visibleIndexes() {
 }
 function show(i) {
   current = i;
-  lbImg.src = PHOTOS[i].src;
+  lbImg.onerror = () => { if (lbImg.src.includes("photos-web/")) lbImg.src = PHOTOS[i].src; };
+  lbImg.src = web(PHOTOS[i].src, 2400);
   lbImg.alt = PHOTOS[i].title || "";
   lbCap.textContent = [PHOTOS[i].title, PHOTOS[i].category].filter(Boolean).join("  ·  ");
 }

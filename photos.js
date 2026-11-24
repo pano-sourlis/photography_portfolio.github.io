@@ -20,6 +20,16 @@ const SITE = {
   instagram: "https://instagram.com/pano.sourlis",
 };
 
+// ============================================================
+//  YOUR GEAR  (shown in the "Gear" section)
+//  Add one line per item. "note" is optional.
+//  type can be anything: Camera, Lens, Tripod, Filter, Bag...
+// ============================================================
+const GEAR = [
+  { type: "Camera", name: "Sony a6400",                   note: "24MP APS-C mirrorless" },
+  { type: "Lens",   name: "Sony E PZ 16–50mm f/3.5–5.6 OSS II", note: "Kit lens, my everyday zoom" },
+];
+
 const PHOTOS = [
   { src: "photos/japan-2026/narita_shrine.jpg",         title: "Narita Shrine",                     category: "Japan" },
   { src: "photos/japan-2026/narita_temple.jpg",         title: "Narita Temple",                     category: "Japan" },
